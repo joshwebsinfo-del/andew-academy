@@ -15,7 +15,8 @@ import {
   HelpCircle,
   X,
   Menu,
-  LogOut
+  LogOut,
+  Shield
 } from "lucide-react";
 import { ChemistrySolution, SavedProblem } from "./types";
 import AISolverLab from "./components/AISolverLab";
@@ -23,6 +24,8 @@ import PeriodicDesk from "./components/PeriodicDesk";
 import MolarMassDesk from "./components/MolarMassDesk";
 import HomeDesk from "./components/HomeDesk";
 import QuizzesDesk from "./components/QuizzesDesk";
+import AboutDesk from "./components/AboutDesk";
+import PrivacyPolicyDesk from "./components/PrivacyPolicyDesk";
 import LocalAuth from "./components/LocalAuth";
 
 // Static Default metallurgy problems to populate on first load or fallback
@@ -160,7 +163,7 @@ const DEFAULT_PROBLEMS: SavedProblem[] = [
 export default function App() {
   // --- Persistent & In-App States ---
   const [currentUser, setCurrentUser] = useState<{ name: string; email: string; studentId: string } | null>(null);
-  const [currentTab, setCurrentTab] = useState<"home" | "solver" | "table" | "quizzes">("home");
+  const [currentTab, setCurrentTab] = useState<"home" | "solver" | "table" | "quizzes" | "about" | "privacy">("home");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [tableSubTab, setTableSubTab] = useState<"elements" | "mass">("elements");
   const [searchQuery, setSearchQuery] = useState("");
@@ -343,8 +346,11 @@ export default function App() {
                     { id: "solver", label: "Metallurgy Lab Desk", icon: Sparkles },
                     { id: "table", label: "Periodic Table & Masses", icon: Atom },
                     { id: "quizzes", label: "Quizzes Syllabus", icon: HelpCircle },
+                    { id: "about", label: "About Creator", icon: FileText },
+                    { id: "privacy", label: "Privacy Policy", icon: Shield }
                   ].map((tab) => {
-                    const IconComponent = tab.icon;
+                    // Fallback to FileText if icon not imported properly or dynamically
+                    const IconComponent = tab.icon || FileText;
                     const isActive = currentTab === tab.id;
                     return (
                       <button
@@ -605,6 +611,14 @@ export default function App() {
               {currentTab === "quizzes" && (
                 <QuizzesDesk />
               )}
+
+              {currentTab === "about" && (
+                <AboutDesk />
+              )}
+
+              {currentTab === "privacy" && (
+                <PrivacyPolicyDesk />
+              )}
             </motion.div>
           </AnimatePresence>
         </main>
@@ -618,9 +632,8 @@ export default function App() {
             <p className="text-[10px] text-slate-400 mt-0.5 font-sans">Syllabus-aligned calculation suites for ZNQF Level 4 Operator Technician students.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-4 text-[11px] font-semibold text-slate-505 text-slate-500">
-            <a href="#" className="hover:text-slate-800 transition cursor-pointer">Syllabus Grid</a>
-            <a href="#" className="hover:text-slate-800 transition cursor-pointer">Calibration Standards</a>
-            <a href="#" className="hover:text-slate-800 transition cursor-pointer">Andrew's Office Hours</a>
+            <button onClick={() => setCurrentTab('about')} className="hover:text-slate-800 transition cursor-pointer">About Creator</button>
+            <button onClick={() => setCurrentTab('privacy')} className="hover:text-slate-800 transition cursor-pointer">Privacy Policy</button>
           </div>
         </div>
       </footer>
