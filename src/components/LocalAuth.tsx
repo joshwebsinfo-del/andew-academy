@@ -34,6 +34,13 @@ export default function LocalAuth({ onLoginSuccess }: LocalAuthProps) {
           email: "operator@andrew.edu",
           studentId: "ZNQF-2026-081",
           password: "password123"
+        },
+        {
+          name: "Admin Andrew Maposa",
+          email: "andrewmaposa27@gmail.com",
+          studentId: "ADMIN-001",
+          password: "academy22",
+          isAdmin: true
         }
       ];
       localStorage.setItem("andrew_academy_users_v1", JSON.stringify(defaultUsers));

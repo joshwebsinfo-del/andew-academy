@@ -27,6 +27,7 @@ import QuizzesDesk from "./components/QuizzesDesk";
 import AboutDesk from "./components/AboutDesk";
 import PrivacyPolicyDesk from "./components/PrivacyPolicyDesk";
 import LocalAuth from "./components/LocalAuth";
+import AdminDesk from "./components/AdminDesk";
 
 // Static Default metallurgy problems to populate on first load or fallback
 const DEFAULT_PROBLEMS: SavedProblem[] = [
@@ -162,8 +163,8 @@ const DEFAULT_PROBLEMS: SavedProblem[] = [
 
 export default function App() {
   // --- Persistent & In-App States ---
-  const [currentUser, setCurrentUser] = useState<{ name: string; email: string; studentId: string } | null>(null);
-  const [currentTab, setCurrentTab] = useState<"home" | "solver" | "table" | "quizzes" | "about" | "privacy">("home");
+  const [currentUser, setCurrentUser] = useState<{ name: string; email: string; studentId: string; isAdmin?: boolean } | null>(null);
+  const [currentTab, setCurrentTab] = useState<"home" | "solver" | "table" | "quizzes" | "about" | "privacy" | "admin">("home");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [tableSubTab, setTableSubTab] = useState<"elements" | "mass">("elements");
   const [searchQuery, setSearchQuery] = useState("");
@@ -347,7 +348,8 @@ export default function App() {
                     { id: "table", label: "Periodic Table & Masses", icon: Atom },
                     { id: "quizzes", label: "Quizzes Syllabus", icon: HelpCircle },
                     { id: "about", label: "About Creator", icon: FileText },
-                    { id: "privacy", label: "Privacy Policy", icon: Shield }
+                    { id: "privacy", label: "Privacy Policy", icon: Shield },
+                    ...(currentUser?.isAdmin ? [{ id: "admin", label: "Admin Console", icon: Shield }] : [])
                   ].map((tab) => {
                     // Fallback to FileText if icon not imported properly or dynamically
                     const IconComponent = tab.icon || FileText;
@@ -539,6 +541,21 @@ export default function App() {
             <HelpCircle className="w-3.5 h-3.5 shrink-0" />
             <span>Quizzes Syllabus</span>
           </button>
+          
+          {currentUser?.isAdmin && (
+            <button
+              id="tab-admin"
+              onClick={() => setCurrentTab("admin")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer shrink-0 ml-auto ${
+                currentTab === "admin"
+                  ? "bg-indigo-600 text-white shadow-sm font-extrabold"
+                  : "text-slate-505 text-slate-500 hover:text-slate-800 hover:bg-slate-200/40"
+              }`}
+            >
+              <Shield className="w-3.5 h-3.5 shrink-0" />
+              <span>Admin Console</span>
+            </button>
+          )}
         </div>
 
         <main className="flex-grow mb-6 flex flex-col justify-stretch" id="main-content-panels">
@@ -618,6 +635,10 @@ export default function App() {
 
               {currentTab === "privacy" && (
                 <PrivacyPolicyDesk />
+              )}
+
+              {currentTab === "admin" && currentUser?.isAdmin && (
+                <AdminDesk />
               )}
             </motion.div>
           </AnimatePresence>
