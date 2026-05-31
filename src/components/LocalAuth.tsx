@@ -135,16 +135,14 @@ export default function LocalAuth({ onLoginSuccess }: LocalAuthProps) {
 
       setSuccess(`Authentication successful! Welcome back, ${user.name}.`);
       setTimeout(() => {
-        localStorage.setItem("andrew_academy_current_user_v1", JSON.stringify({
+        const currentUserData = {
           name: user.name,
           email: user.email,
-          studentId: user.studentId
-        }));
-        onLoginSuccess({
-          name: user.name,
-          email: user.email,
-          studentId: user.studentId
-        });
+          studentId: user.studentId,
+          isAdmin: user.isAdmin || false,
+        };
+        localStorage.setItem("andrew_academy_current_user_v1", JSON.stringify(currentUserData));
+        onLoginSuccess(currentUserData);
       }, 1200);
     }
   };

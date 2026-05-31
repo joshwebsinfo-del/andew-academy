@@ -28,6 +28,7 @@ import AboutDesk from "./components/AboutDesk";
 import PrivacyPolicyDesk from "./components/PrivacyPolicyDesk";
 import LocalAuth from "./components/LocalAuth";
 import AdminDesk from "./components/AdminDesk";
+import PWAInstallPrompt from "./components/PWAInstallPrompt";
 
 // Static Default metallurgy problems to populate on first load or fallback
 const DEFAULT_PROBLEMS: SavedProblem[] = [
@@ -173,6 +174,7 @@ export default function App() {
   const [difficultyLevel, setDifficultyLevel] = useState("ZNQF Level 4 - Core");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [adminClickCount, setAdminClickCount] = useState(0);
   
   // Recover user session on load
   useEffect(() => {
@@ -271,6 +273,16 @@ export default function App() {
     }
   };
 
+  // --- Brand click trigger for Admin ---
+  const handleBrandClick = () => {
+    const newCount = adminClickCount + 1;
+    setAdminClickCount(newCount);
+    if (newCount >= 5) {
+      setCurrentTab("admin");
+      setAdminClickCount(0);
+    }
+  };
+
   // Derived helper for real studies metadata in journal
   const uniqueTopicsCount = useMemo(() => {
     const topics = savedProblems.map(p => p.solution?.topic || "Processing");
@@ -348,8 +360,7 @@ export default function App() {
                     { id: "table", label: "Periodic Table & Masses", icon: Atom },
                     { id: "quizzes", label: "Quizzes Syllabus", icon: HelpCircle },
                     { id: "about", label: "About Creator", icon: FileText },
-                    { id: "privacy", label: "Privacy Policy", icon: Shield },
-                    ...(currentUser?.isAdmin ? [{ id: "admin", label: "Admin Console", icon: Shield }] : [])
+                    { id: "privacy", label: "Privacy Policy", icon: Shield }
                   ].map((tab) => {
                     // Fallback to FileText if icon not imported properly or dynamically
                     const IconComponent = tab.icon || FileText;
@@ -440,7 +451,7 @@ export default function App() {
             <div className="flex flex-col items-start leading-tight">
               <span className="text-[10px] font-extrabold text-[#0e1154] tracking-[0.2em] uppercase font-sans">Syllabus Guide</span>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl md:text-2xl font-black tracking-tight text-[#0e1154]" id="brand-title">Andrew Academy</h1>
+                <h1 onClick={handleBrandClick} className="text-xl md:text-2xl font-black tracking-tight text-[#0e1154] cursor-pointer select-none" id="brand-title">Andrew Academy</h1>
               </div>
             </div>
           </div>
@@ -643,6 +654,7 @@ export default function App() {
             </motion.div>
           </AnimatePresence>
         </main>
+        <PWAInstallPrompt />
       </div>
 
       {/* Classroom Footer - responsive, mobile safety cushions */}

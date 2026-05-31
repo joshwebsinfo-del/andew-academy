@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { 
   Sparkles, 
   Award,
@@ -12,7 +12,8 @@ import {
   BookOpen,
   Volume2,
   VolumeX,
-  Download
+  Download,
+  Mic
 } from "lucide-react";
 import { ChemistrySolution, SavedProblem } from "../types";
 
